@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  db:
+    image: cockroachdb/cockroach:v23.2.6
+    command: start-single-node --insecure --host=0.0.0.0
+    ports: ["26257:26257", "8081:8080"]
+    healthcheck:
+      test: ["CMD", "cockroach", "sql", "--insecure", "--execute", "SELECT 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes: [stocksdb-data:/cockroach/cockroach-data]
+  migrator:
+    build: .
+    depends_on:
+      db: { condition: service_healthy }
+    env_file: .env
+    entrypoint: ["./migrator"]
+    restart: "no"
+  api:
+    build: .
+    depends_on:
+      migrator: { condition: service_completed_successfully }
+    env_file: .env
+    entrypoint: ["./api"]
+    ports: ["${APP_PORT}:8080"]
+
+volumes:
+  stocksdb-data:

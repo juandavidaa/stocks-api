@@ -1,0 +1,5 @@
+package stocks
+
+func CreateStocks() {
+
+}

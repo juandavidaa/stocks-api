@@ -1,0 +1,16 @@
+.env
+# Binaries for programs and plugins
+/api
+/migrator
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+
+#test coverage
+coverage.*
+*.out
+
+#vscode files
+.vscode/
